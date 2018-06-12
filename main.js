@@ -1,5 +1,7 @@
-var cols = 50;
-var rows = 50;
+var cols = 100;
+var rows = 100;
+var wallsDropRate = 0.50
+
 
 var closedList = Array();
 var openList = Array();
@@ -24,6 +26,9 @@ function setup() {
         grid[i] = new Array(rows);
         for (let j = 0; j < rows; j++) {
             grid[i][j] = new Place(i, j);
+            if (Math.random() < wallsDropRate) {
+                grid[i][j].wall = true;
+            }
         }
     }
 
@@ -36,6 +41,8 @@ function setup() {
 
     origin = grid[0][0];
     target = grid[cols - 1][rows - 1];
+    origin.wall = false;
+    target.wall = false;
     openList.push(origin);
 
 }
@@ -61,30 +68,42 @@ function draw() {
         }
 
         closedList.push(actual);
-        removeFromArray(openList, actual);
+        openList.remove(actual);
 
         actual.neighbors.forEach(neighbor => {
-            if (!closedList.includes(neighbor)) {
-                var tempCost = actual.cost + 1;
+            if (!closedList.includes(neighbor) && !neighbor.wall) {
+                var tempCost;
+                var newPath = false;
+                if(actual.x !== neighbor.x && actual.y !== neighbor.y){
+                    tempCost = actual.cost + Math.sqrt(2);
+                }
+                else{
+                    tempCost = actual.cost + 1;
+                }
 
                 if (openList.includes(neighbor)) {
                     if (tempCost < neighbor.cost) {
                         neighbor.cost = tempCost;
+                        newPath = true;
                     }
                 } else {
                     neighbor.cost = tempCost;
                     openList.push(neighbor);
+                    newPath = true;
                 }
 
-                neighbor.heuristic = heuristic(neighbor, target);
-                neighbor.estimation = neighbor.heuristic + neighbor.cost;
-                neighbor.elder = actual;
+                if(newPath){
+                    neighbor.heuristic = heuristic(neighbor, target);
+                    neighbor.estimation = neighbor.heuristic + neighbor.cost;
+                    neighbor.elder = actual;
+                }
             }
         });
 
 
     } else {
         console.log("No solution for path");
+        noLoop();
     }
 
 
@@ -107,7 +126,7 @@ function draw() {
     let temp = actual;
     path = [];
     path.push(temp);
-    while(temp.elder != null){
+    while (temp.elder != null) {
         path.push(temp.elder);
         temp = temp.elder;
     }
@@ -118,12 +137,12 @@ function draw() {
 }
 
 
-function removeFromArray(array, item) {
-    let index = array.indexOf(item);
-    if (index > -1) {
-        array.splice(index, 1);
-    }
-}
+Array.prototype.remove   =  function (item) {
+                                let index = this.indexOf(item);
+                                if (index > -1) {
+                                    this.splice(index, 1);
+                                }
+                            }
 
 function heuristic(a, b) {
     return dist(a.x, a.y, b.x, b.y);
