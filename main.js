@@ -1,6 +1,6 @@
 var cols = 30;
 var rows = 30;
-var wallsDropRate = 0.50
+var wallsDropRate = 0.40;
 
 
 var closedList = Array();
