@@ -1,5 +1,5 @@
-var cols = 100;
-var rows = 100;
+var cols = 30;
+var rows = 30;
 var wallsDropRate = 0.50
 
 
@@ -50,7 +50,7 @@ function setup() {
 // execution loop
 function draw() {
 
-    background(0);
+    background(255);
 
     if (openList.length > 0) {
         let lowestIndex = 0;
@@ -74,10 +74,10 @@ function draw() {
             if (!closedList.includes(neighbor) && !neighbor.wall) {
                 var tempCost;
                 var newPath = false;
-                if(actual.x !== neighbor.x && actual.y !== neighbor.y){
+                if (actual.x !== neighbor.x && actual.y !== neighbor.y) {
                     tempCost = actual.cost + Math.sqrt(2);
                 }
-                else{
+                else {
                     tempCost = actual.cost + 1;
                 }
 
@@ -92,7 +92,7 @@ function draw() {
                     newPath = true;
                 }
 
-                if(newPath){
+                if (newPath) {
                     neighbor.heuristic = heuristic(neighbor, target);
                     neighbor.estimation = neighbor.heuristic + neighbor.cost;
                     neighbor.elder = actual;
@@ -126,23 +126,30 @@ function draw() {
     let temp = actual;
     path = [];
     path.push(temp);
-    while (temp.elder != null) {
+    while (temp && temp.elder != null) {
         path.push(temp.elder);
         temp = temp.elder;
     }
 
-    path.forEach(item => {
-        item.show(color(180, 0, 180));
-    });
+    if(path.length > 0){
+        noFill();
+        stroke(180, 24, 180);
+        strokeWeight(canvasWidth / cols / 2);
+        beginShape();
+        path.forEach(item => {
+            vertex(item.x * canvasWidth / cols, item.y * canvasHeight / rows);
+        });
+        endShape();
+    }
 }
 
 
-Array.prototype.remove   =  function (item) {
-                                let index = this.indexOf(item);
-                                if (index > -1) {
-                                    this.splice(index, 1);
-                                }
-                            }
+Array.prototype.remove = function (item) {
+    let index = this.indexOf(item);
+    if (index > -1) {
+        this.splice(index, 1);
+    }
+}
 
 function heuristic(a, b) {
     return dist(a.x, a.y, b.x, b.y);

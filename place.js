@@ -10,46 +10,49 @@ class Place {
         this.neighbors = [];
         this.elder = null;
 
-        return this;s
+        return this;
     }
 
     show(col) {
-        if(this.wall === true){
+        if (this.wall === true) {
             col = color(0);
         }
         fill(col);
         noStroke();
-        rect(this.x * canvasWidth / cols, this.y * canvasHeight / rows,
-            canvasWidth / cols - 1,      canvasHeight / rows - 1);
+        if(this.wall){
+            ellipse(this.x * canvasWidth / cols, this.y * canvasHeight / rows,
+                    canvasWidth / cols - 15, canvasHeight / rows - 15);
+        }
+
     }
 
-    addNeighbors(grid){
-        if(this.x < cols - 1){
-            this.neighbors.push(grid[this.x+1][this.y]);
+    addNeighbors(grid) {
+        if (this.x < cols - 1) {
+            this.neighbors.push(grid[this.x + 1][this.y]);
         }
-        if(this.x > 0){
-            this.neighbors.push(grid[this.x-1][this.y]);
+        if (this.x > 0) {
+            this.neighbors.push(grid[this.x - 1][this.y]);
         }
-        if(this.y < rows - 1){
-            this.neighbors.push(grid[this.x][this.y+1]);
+        if (this.y < rows - 1) {
+            this.neighbors.push(grid[this.x][this.y + 1]);
         }
-        if(this.y > 0){
-            this.neighbors.push(grid[this.x][this.y-1]);
+        if (this.y > 0) {
+            this.neighbors.push(grid[this.x][this.y - 1]);
         }
 
 
         // Diagonals
-        if(this.x > 0 && this.y > 0){
-            this.neighbors.push(grid[this.x-1][this.y-1]);
+        if (this.x > 0 && this.y > 0) {
+            this.neighbors.push(grid[this.x - 1][this.y - 1]);
         }
-        if(this.x > 0 && this.y < rows - 1){
-            this.neighbors.push(grid[this.x-1][this.y+1]);
+        if (this.x > 0 && this.y < rows - 1) {
+            this.neighbors.push(grid[this.x - 1][this.y + 1]);
         }
-        if(this.x < cols - 1 && this.y > 0){
-            this.neighbors.push(grid[this.x+1][this.y-1]);
+        if (this.x < cols - 1 && this.y > 0) {
+            this.neighbors.push(grid[this.x + 1][this.y - 1]);
         }
-        if(this.x < cols - 1 && this.y < rows - 1){
-            this.neighbors.push(grid[this.x+1][this.y+1]);
+        if (this.x < cols - 1 && this.y < rows - 1) {
+            this.neighbors.push(grid[this.x + 1][this.y + 1]);
         }
     }
 }
